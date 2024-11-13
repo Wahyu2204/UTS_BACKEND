@@ -26,31 +26,31 @@ class EmployeesController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'name' => 'required',
-        'gender' => 'required',
-        'phone' => 'required',
-        'address' => 'string|required',
-        'email' => 'email|required',
-        'status' => 'required',
-        'hired_on' => 'required|date',
-    ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'gender' => 'required',
+            'phone' => 'required',
+            'address' => 'string|required',
+            'email' => 'email|required',
+            'status' => 'required',
+            'hired_on' => 'required|date',
+        ]);
 
-    if ($validator->fails()) {
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $employees = Employees::create($request->all());
+
         return response()->json([
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422);
+            'message' => 'Employee is created successfully',
+            'data' => $employees,
+        ], 201);
     }
-
-    $employees = Employees::create($request->all());
-
-    return response()->json([
-        'message' => 'Employee is created successfully',
-        'data' => $employees,
-    ], 201);
-}
 
     public function update(Request $request, $id)
     {
