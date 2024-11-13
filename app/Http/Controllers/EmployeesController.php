@@ -60,8 +60,8 @@ class EmployeesController extends Controller
         if ($employees) {
 
             $input = [
-                'nama' => $request->nama ?? $employees->nama,
-                'phone' => $request->phone ?? $employees->nim,
+                'name' => $request->name ?? $employees->name,
+                'phone' => $request->phone ?? $employees->phone,
                 'email' => $request->email ?? $employees->email,
                 'gender' => $request->gender ?? $employees->gender,
                 'address' => $request->address ?? $employees->address,
@@ -128,4 +128,50 @@ class EmployeesController extends Controller
             return response()->json($data, 404);
         }
     }
+
+    public function search(Request $request)
+{
+    $keyword = $request->input('keyword');
+
+    $employees = Employees::where('name', 'LIKE', "%{$keyword}%")
+        ->orWhere('email', 'LIKE', "%{$keyword}%")
+        ->orWhere('phone', 'LIKE', "%{$keyword}%")
+        ->get();
+
+    return response()->json([
+        'message' => 'Search results',
+        'data' => $employees,
+    ], 200);
+}
+
+public function getActive()
+{
+    $employees = Employees::where('status', 'active')->get();
+
+    return response()->json([
+        'message' => 'Active employees',
+        'data' => $employees,
+    ], 200);
+}
+
+public function getInactive()
+{
+    $employees = Employees::where('status', 'inactive')->get();
+
+    return response()->json([
+        'message' => 'Inactive employees',
+        'data' => $employees,
+    ], 200);
+}
+
+public function getTerminated()
+{
+    $employees = Employees::where('status', 'terminated')->get();
+
+    return response()->json([
+        'message' => 'Terminated employees',
+        'data' => $employees,
+    ], 200);
+}
+
 }
